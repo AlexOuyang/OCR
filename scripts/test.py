@@ -7,7 +7,8 @@ import numpy as np
 from pylab import imread, imshow, figure, show, subplot
 from scipy.cluster.vq import kmeans, vq
 
-img = imread('../pics/1.png')
+img = imread('result.tif')
+print img
 
 # reshaping the pixels matrix to read in for k means
 pixel = np.reshape(img, (img.shape[0] * img.shape[1], 3))
