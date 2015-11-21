@@ -4,7 +4,7 @@ from cv2 import THRESH_OTSU
 from pylab import imread, imshow, imsave, figure, show, subplot, plot, scatter, title
 import ocr
 
-# img = cv2.imread('../pics/1.png')
+# img = cv2.imread('../pics/print.png')
 # saved_image_name = '../pics/cropped/cvPic1.png'
 # edge = cv2.Canny(img,50,50)
 # ret,thresh = cv2.threshold(edge,127,255,THRESH_OTSU)
@@ -46,12 +46,17 @@ import ocr
 # imshow(cropped_img)
 # show()
 
-figure(1)
 
+
+
+
+
+
+figure(1)
 for i in range(1,10):
     img_name = '../pics/' + str(i) + '.png'
     saved_image_name = '../pics/cropped/cropped_' + str(i) + '.png'
-    cropped_img = ocr.crop_digit(img_name, saved_image_name, 10)
+    cropped_img = ocr.crop_digit(img_name, 10)
     cv2.imwrite(saved_image_name, cropped_img)
 
     idx = 330 + i
@@ -60,10 +65,30 @@ for i in range(1,10):
 
 show()
 
+figure(2)
+title("Pretty Print")
+cropped_img = ocr.crop_digit('../pics/print.png', 10)
+cv2.imwrite('../pics/cropped/cvPic1.png', cropped_img)
+subplot(111)
+imshow(cropped_img)
+show()
+
+figure(3)
+title("handWriting")
+cropped_img = ocr.crop_digit('../pics/handWriting.jpg', 10)
+cv2.imwrite('../pics/cropped/cvPic2.png', cropped_img)
+subplot(111)
+imshow(cropped_img)
+show()
 
 
-
-
+figure(4)
+title("handWriting")
+cropped_img = ocr.crop_digit('../pics/lotsOfDigits.png', 5)
+cv2.imwrite('../pics/cropped/cvPic3.png', cropped_img)
+subplot(111)
+imshow(cropped_img)
+show()
 
 
 

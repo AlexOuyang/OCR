@@ -10,9 +10,8 @@ from scipy.cluster.vq import kmeans, vq
 # from skimage.filters import threshold_otsu, threshold_adaptive, threshold_yen
 # from skimage.segmentation import clear_border
 
-def crop_digit(imgName, saveImageName, boundingRectMinSize):
+def crop_digit(imgName, boundingRectMinSize):
     img = cv2.imread(imgName)
-    saved_image_name = saveImageName
     edge = cv2.Canny(img,50,50)
     ret,thresh = cv2.threshold(edge,127,255,THRESH_OTSU)
     # gray=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
