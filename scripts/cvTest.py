@@ -1,13 +1,15 @@
 import cv2
 import numpy as np
-from cv2 import THRESH_OTSU
 from pylab import imread, imshow, imsave, figure, show, subplot, plot, scatter, title
 import ocr
 
-# img = cv2.imread('../pics/print.png')
+# img = cv2.imread('../pics/five.png', 0)
 # saved_image_name = '../pics/cropped/cvPic1.png'
-# edge = cv2.Canny(img,50,50)
-# ret,thresh = cv2.threshold(edge,127,255,THRESH_OTSU)
+# blur = cv2.GaussianBlur(img,(5,5),0)
+# edge = cv2.Canny(blur,50,50)
+# # ret,thresh = cv2.threshold(edge,127,255,cv2.THRESH_OTSU)
+# ret,thresh = cv2.threshold(edge,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+
 # # gray=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
 # contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
 # idx =0 
@@ -34,7 +36,7 @@ import ocr
 # figure(1)
 # subplot(221)
 # title('Original Image')
-# imshow(img)
+# imshow(blur)
 # subplot(222)
 # title('Canny Edge Detection')
 # imshow(edge)
@@ -56,7 +58,7 @@ figure(1)
 for i in range(1,10):
     img_name = '../pics/' + str(i) + '.png'
     saved_image_name = '../pics/cropped/cropped_' + str(i) + '.png'
-    cropped_img = ocr.crop_digit(img_name, 10)
+    cropped_img = ocr.crop_digit(img_name, 3)
     cv2.imwrite(saved_image_name, cropped_img)
 
     idx = 330 + i
@@ -67,7 +69,7 @@ show()
 
 figure(2)
 title("Pretty Print")
-cropped_img = ocr.crop_digit('../pics/print.png', 10)
+cropped_img = ocr.crop_digit('../pics/print.png', 3)
 cv2.imwrite('../pics/cropped/cvPic1.png', cropped_img)
 subplot(111)
 imshow(cropped_img)
@@ -75,7 +77,7 @@ show()
 
 figure(3)
 title("handWriting")
-cropped_img = ocr.crop_digit('../pics/handWriting.jpg', 10)
+cropped_img = ocr.crop_digit('../pics/handWriting.jpg', 3)
 cv2.imwrite('../pics/cropped/cvPic2.png', cropped_img)
 subplot(111)
 imshow(cropped_img)
@@ -84,7 +86,7 @@ show()
 
 figure(4)
 title("handWriting")
-cropped_img = ocr.crop_digit('../pics/lotsOfDigits.png', 5)
+cropped_img = ocr.crop_digit('../pics/lotsOfDigits.png', 3)
 cv2.imwrite('../pics/cropped/cvPic3.png', cropped_img)
 subplot(111)
 imshow(cropped_img)

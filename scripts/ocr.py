@@ -11,19 +11,21 @@ from scipy.cluster.vq import kmeans, vq
 # from skimage.segmentation import clear_border
 
 def crop_digit(imgName, boundingRectMinSize):
-    img = cv2.imread(imgName)
-    edge = cv2.Canny(img,50,50)
-    ret,thresh = cv2.threshold(edge,127,255,THRESH_OTSU)
-    # gray=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+    img = cv2.imread(imgName,0)
+    blur = cv2.GaussianBlur(img,(5, 5), 0)
+    edge = cv2.Canny(blur, 50, 50)
+    # ret,thresh = cv2.threshold(edge,127,255,cv2.THRESH_OTSU)
+    # Otsu's thresholding after Gaussian filtering and Canny edge detection
+    ret,thresh = cv2.threshold(edge,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
     idx = 0 
     for cnt in contours:
         idx += 1
         if cnt.shape[0] >= boundingRectMinSize:
             x,y,w,h = cv2.boundingRect(cnt)
-            cv2.rectangle(img,(x,y),(x+w,y+h),(200,0,0),1)
-            cv2.rectangle(thresh,(x,y),(x+w,y+h),(200,0,0),1)
-            cv2.rectangle(edge,(x,y),(x+w,y+h),(200,0,0),1)
+            cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),1)
+            cv2.rectangle(thresh,(x,y),(x+w,y+h),(0,255,0),1)
+            cv2.rectangle(edge,(x,y),(x+w,y+h),(0,255,0),1)
 
     return img
 
