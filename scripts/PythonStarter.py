@@ -125,12 +125,15 @@ def temp_filter_method_sobel(imageFile):
 	from skimage.filters import roberts, sobel, scharr, prewitt
 
 	imageFile = '../pics/beach2.png'
+	
 	image = data.imread(imageFile, as_grey=True)
+	
 	edge_roberts = roberts(image)
+	
 	edge_sobel = sobel(image)
 	
 	bin_pos_mat = ocr.binary_matrix_to_position(edge_sobel)
-    np.savetxt("test.txt",bin_pos_mat)
+	np.savetxt("test.txt",bin_pos_mat)
 	
 
 

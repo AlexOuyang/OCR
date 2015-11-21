@@ -63,7 +63,7 @@ show()
 
 # np.savetxt("test.txt", img_bin_adaptive)
 
-# imsave('result.tif', img_bin_adaptive)
+imsave('result.tif', img_as_uint(binary_adaptive))
 
 # for ax in axes:
 #     ax.axis('off')

@@ -5,7 +5,7 @@ from skimage.data import camera
 from skimage import data, img_as_uint, img_as_float
 from skimage.filters import roberts, sobel, scharr, prewitt
 
-imageFile = '../pics/beach2.png'
+imageFile = '../pics/1.png'
 image = data.imread(imageFile, as_grey=True)
 edge_roberts = roberts(image)
 edge_sobel = sobel(image)
