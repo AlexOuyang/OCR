@@ -34,7 +34,25 @@ def binary_matrix_to_position(binMat):
     # go through the clustered matrix and get the position of the pixel that's not white
     for (x,y), pixel in np.ndenumerate(binMat):
         pixelColor =  binMat[x,y]
-        if pixelColor == False || pixelColor > 0:
+        if pixelColor == False:
+            binPos = np.empty((1,2), int)
+            binPos[0,0] = x
+            binPos[0,1] = y
+            binPosMat = np.append(binPosMat, binPos, axis=0)
+
+    # flip the matrix
+    return binPosMat
+
+
+def binary_matrix_to_position_num(binMat):
+    """ takes in n x n binary True False color matrix and output a 
+        n*n x 1 position matrix represent the position of colored digits 
+    """
+    binPosMat = np.empty((0,2), int)
+    # go through the clustered matrix and get the position of the pixel that's not white
+    for (x,y), pixel in np.ndenumerate(binMat):
+        pixelColor =  binMat[x,y]
+        if pixelColor > 0:
             binPos = np.empty((1,2), int)
             binPos[0,0] = x
             binPos[0,1] = y

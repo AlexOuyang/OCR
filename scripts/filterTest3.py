@@ -1,16 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import ocr
 
 from skimage.data import camera
 from skimage import data, img_as_uint, img_as_float
 from skimage.filters import roberts, sobel, scharr, prewitt
 
-imageFile = '../pics/beach2.png'
+imageFile = '../pics/14.png'
 image = data.imread(imageFile, as_grey=True)
 edge_roberts = roberts(image)
 edge_sobel = sobel(image)
 
-print edge_sobel
+
+# binPosMat = ocr.binary_matrix_to_position_2(edge_sobel)
 
 fig, (ax0, ax1) = plt.subplots(ncols=2, sharex=True, sharey=True, subplot_kw={'adjustable':'box-forced'})
 
@@ -24,3 +26,4 @@ ax1.axis('off')
 
 plt.tight_layout()
 plt.show()
+

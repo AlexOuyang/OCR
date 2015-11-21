@@ -9,7 +9,7 @@ from skimage.external.tifffile import imsave
 from skimage.filters import threshold_otsu, threshold_adaptive, threshold_yen
 from skimage.segmentation import clear_border
 
-imageFile = '../pics/14.png'
+imageFile = '../pics/1.png'
 image = imread(imageFile)
 img = data.imread(imageFile, as_grey=True)
 
@@ -28,10 +28,13 @@ img_bin_global = clear_border(img_as_uint(binary_global))
 # 0 1 binary matrix 
 img_bin_adaptive = clear_border(img_as_uint(binary_adaptive))
 
+savedImg = img_as_float(binary_adaptive)
+
+imsave('../pics/result.tif', img_as_uint(binary_adaptive))
+
 
 bin_pos_mat = ocr.binary_matrix_to_position(binary_adaptive)
 
-np.savetxt("test.txt",bin_pos_mat) # %.5f specifies 5 decimal round
 
 fig, axes = plt.subplots(nrows=3, figsize=(7, 8))
 ax0, ax1, ax2 = axes
