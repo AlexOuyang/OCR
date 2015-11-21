@@ -2,8 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from pylab import imread, imshow, figure, show, subplot
-from skimage import data, img_as_uint, img_as_floatimport matplotlib.pyplot as plt
-import numpy as np
+from skimage import data, img_as_uint, img_as_float
 import ocr
 
 from pylab import imread, imshow, figure, show, subplot, plot, scatter
@@ -24,7 +23,7 @@ binary_global = img > global_thresh
 block_size = 40
 
 # True False binary matrix represent color value of the img using adaptive thresholding
-binary_adaptive = threshold_adaptive(img, block_size, offset=0)
+binary_adaptive = threshold_adaptive(img, block_size, offset=10)
 
 # 0 1 binary matrix
 img_bin_global = clear_border(img_as_uint(binary_global))

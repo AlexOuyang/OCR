@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import cv2
+from cv2 import THRESH_OTSU
 
 from pylab import imread, imshow, figure, show, subplot, plot, scatter
 from scipy.cluster.vq import kmeans, vq
@@ -8,7 +10,26 @@ from scipy.cluster.vq import kmeans, vq
 # from skimage.filters import threshold_otsu, threshold_adaptive, threshold_yen
 # from skimage.segmentation import clear_border
 
+def crop_digit(imgName, saveImageName, boundingRectMinSize):
+    img = cv2.imread(imgName)
+    saved_image_name = saveImageName
+    edge = cv2.Canny(img,50,50)
+    ret,thresh = cv2.threshold(edge,127,255,THRESH_OTSU)
+    # gray=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+    contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
+    idx = 0 
+    for cnt in contours:
+        idx += 1
+        if cnt.shape[0] >= boundingRectMinSize:
+            x,y,w,h = cv2.boundingRect(cnt)
+            cv2.rectangle(img,(x,y),(x+w,y+h),(200,0,0),1)
+            cv2.rectangle(thresh,(x,y),(x+w,y+h),(200,0,0),1)
+            cv2.rectangle(edge,(x,y),(x+w,y+h),(200,0,0),1)
 
+    return img
+
+# K means on color filtering, it doesn't clear out the background very well
+# produces thick edge that connects digits together causion confusion
 def img_kmeans(imgFile, k):
     img = imread(imgFile)
     # reshaping the pixels matrix to read in for k means
@@ -26,6 +47,9 @@ def img_kmeans(imgFile, k):
     return clustered, clustered_color
 
 
+# binary matrix to position is used to convert binary image to positional matrix of each 
+# non white pixel, it is then used for k means to cluster the digits into groups
+# It didn't go well because digits sometimes are connected so they are often clustered together
 def binary_matrix_to_position(binMat):
     """ takes in n x n binary True False color matrix and output a 
         n*n x 1 position matrix represent the position of colored digits 

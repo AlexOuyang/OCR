@@ -120,6 +120,7 @@ def temp_filter_method_kmeans_color(imageFile):
 
 
 def temp_filter_method_sobel(imageFile):
+<<<<<<< HEAD
     from skimage.data import camera
     from skimage import data, img_as_uint, img_as_float
     from skimage.filters import roberts, sobel, scharr, prewitt
@@ -131,6 +132,22 @@ def temp_filter_method_sobel(imageFile):
     bin_pos_mat = ocr.binary_matrix_to_position_num(edge_sobel)
     print bin_pos_mat
     # np.savetxt("test.txt",bin_pos_mat)
+=======
+	from skimage.data import camera
+	from skimage import data, img_as_uint, img_as_float
+	from skimage.filters import roberts, sobel, scharr, prewitt
+
+	imageFile = '../pics/beach2.png'
+	
+	image = data.imread(imageFile, as_grey=True)
+	
+	edge_roberts = roberts(image)
+	
+	edge_sobel = sobel(image)
+	
+	bin_pos_mat = ocr.binary_matrix_to_position(edge_sobel)
+	np.savetxt("test.txt",bin_pos_mat)
+>>>>>>> 57878957f56a122b604e36c48abb4757808fca1d
 	
 
 
