@@ -12,3 +12,10 @@ Thumbs.db
 *.pyc
 /**/*.pyc
 
+
+# Pics #
+############
+
+*./pics/*
+*./pics/cropped/*
+
