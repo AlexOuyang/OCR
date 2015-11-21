@@ -34,7 +34,7 @@ def binary_matrix_to_position(binMat):
     # go through the clustered matrix and get the position of the pixel that's not white
     for (x,y), pixel in np.ndenumerate(binMat):
         pixelColor =  binMat[x,y]
-        if pixelColor == False:
+        if pixelColor == False || pixelColor > 0:
             binPos = np.empty((1,2), int)
             binPos[0,0] = x
             binPos[0,1] = y
