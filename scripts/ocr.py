@@ -11,8 +11,8 @@ from scipy.cluster.vq import kmeans, vq
 # from skimage.segmentation import clear_border
 
 def crop_digit(imgName, boundingRectMinSize):
-    img = cv2.imread(imgName,0)
-    blur = cv2.GaussianBlur(img,(5, 5), 0)
+    img = cv2.imread(imgName)
+    blur = cv2.GaussianBlur(img,(5, 5), 0)  
     edge = cv2.Canny(blur, 50, 50)
     # ret,thresh = cv2.threshold(edge,127,255,cv2.THRESH_OTSU)
     # Otsu's thresholding after Gaussian filtering and Canny edge detection

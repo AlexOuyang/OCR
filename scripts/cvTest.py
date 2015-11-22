@@ -3,9 +3,9 @@ import numpy as np
 from pylab import imread, imshow, imsave, figure, show, subplot, plot, scatter, title
 import ocr
 
-# img = cv2.imread('../pics/five.png', 0)
+# img = cv2.imread('../pics/8.png')
 # saved_image_name = '../pics/cropped/cvPic1.png'
-# blur = cv2.GaussianBlur(img,(5,5),0)
+# blur = cv2.GaussianBlur(img,(5, 5), 0)   
 # edge = cv2.Canny(blur,50,50)
 # # ret,thresh = cv2.threshold(edge,127,255,cv2.THRESH_OTSU)
 # ret,thresh = cv2.threshold(edge,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
@@ -19,8 +19,8 @@ import ocr
 #     if cnt.shape[0] >= boundingRectMinSize:
 #         x,y,w,h = cv2.boundingRect(cnt)
 #         # roi=im[y:y+h,x:x+w]
-#         cv2.rectangle(img,(x,y),(x+w,y+h),(200,0,0),1)
-#         cv2.rectangle(thresh,(x,y),(x+w,y+h),(200,0,0),1)
+#         cv2.rectangle(img,(x,y),(x+w,y+h),(0,250,0),1)
+#         cv2.rectangle(thresh,(x,y),(x+w,y+h),(0,250,0),1)
 #         # cv2.imwrite('../pics/cropped/' + str(idx) + '.png', im)
 #         # im = cv2.imread('../pics/beach2.png')
 
@@ -36,7 +36,7 @@ import ocr
 # figure(1)
 # subplot(221)
 # title('Original Image')
-# imshow(blur)
+# imshow(img)
 # subplot(222)
 # title('Canny Edge Detection')
 # imshow(edge)
@@ -69,7 +69,7 @@ show()
 
 figure(2)
 title("Pretty Print")
-cropped_img = ocr.crop_digit('../pics/print.png', 3)
+cropped_img = ocr.crop_digit('../pics/print.png', 10)
 cv2.imwrite('../pics/cropped/cvPic1.png', cropped_img)
 subplot(111)
 imshow(cropped_img)
@@ -77,7 +77,7 @@ show()
 
 figure(3)
 title("handWriting")
-cropped_img = ocr.crop_digit('../pics/handWriting.jpg', 3)
+cropped_img = ocr.crop_digit('../pics/handWriting.jpg', 10)
 cv2.imwrite('../pics/cropped/cvPic2.png', cropped_img)
 subplot(111)
 imshow(cropped_img)
@@ -86,7 +86,7 @@ show()
 
 figure(4)
 title("handWriting")
-cropped_img = ocr.crop_digit('../pics/lotsOfDigits.png', 3)
+cropped_img = ocr.crop_digit('../pics/lotsOfDigits.png', 5)
 cv2.imwrite('../pics/cropped/cvPic3.png', cropped_img)
 subplot(111)
 imshow(cropped_img)

@@ -18,12 +18,12 @@ from skimage.filters import threshold_otsu, threshold_adaptive, threshold_yen
 from skimage.segmentation import clear_border
 
 
-img = '../pics/14.png'
+img = '../pics/1.png'
 # img = imread('../pics/1.png')
 
 image = imread(img)
 
-clustered, clustered_color = ocr.img_kmeans(img, 2)
+clustered, clustered_color = ocr.img_kmeans(img, 4)
 
 binPosMat = ocr.binary_matrix_to_position_2(clustered)
 
