@@ -1,2 +1,2 @@
 # OCR
-Optical character Recognition using kmeans and neural network
+Optical character Recognition using opencv and neural network
