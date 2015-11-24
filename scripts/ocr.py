@@ -22,8 +22,8 @@ def crop_digit(imgName, boundingRectMinSize):
     contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
     idx = 0 
     for cnt in contours:
-        idx += 1
         if cnt.shape[0] >= boundingRectMinSize:
+            idx += 1
             x,y,w,h = cv2.boundingRect(cnt)
             cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),1)
             cv2.rectangle(thresh,(x,y),(x+w,y+h),(0,255,0),1)
@@ -31,7 +31,8 @@ def crop_digit(imgName, boundingRectMinSize):
     return img
 
 
-def save_digit_to_img(imgName, boundingRectMinSize):
+# crop the digit and save as binary files
+def save_digit_to_binary_img(imgName, boundingRectMinSize):
     img = cv2.imread(imgName)
     blur = cv2.GaussianBlur(img,(5, 5), 0)  
     edge = cv2.Canny(blur, 50, 50)
@@ -41,14 +42,15 @@ def save_digit_to_img(imgName, boundingRectMinSize):
     contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
     idx = 0 
     for cnt in contours:
-        idx += 1
         if cnt.shape[0] >= boundingRectMinSize:
+            idx += 1
             x,y,w,h = cv2.boundingRect(cnt)
             # cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),1)
-            # cv2.rectangle(thresh,(x,y),(x+w,y+h),(0,255,0),1)
-            # cv2.rectangle(edge,(x,y),(x+w,y+h),(0,255,0),1)
             crop_img = img[y: y + h, x: x + w]   # img[y: y + h, x: x + w]
-            cv2.imwrite('../pics/cropped/' + str(idx) + '.png', crop_img)
+            grayed_im  = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+            # blur = cv2.GaussianBlur(grayed_im,(5, 5), 0)  
+            ret,thresh = cv2.threshold(grayed_im,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+            cv2.imwrite('../pics/cropped/' + str(idx) + '.png', thresh)
     return img
 
 

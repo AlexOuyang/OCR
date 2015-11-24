@@ -96,7 +96,7 @@ import ocr
 
 figure(1)
 title("handWriting")
-cropped_img = ocr.save_digit_to_img('../pics/lotsOfDigits.png', 5)
+cropped_img = ocr.save_digit_to_binary_img('../pics/12.png', 5)
 cv2.imwrite('../pics/cropped/cvPic3.png', cropped_img)
 subplot(111)
 imshow(cropped_img)
