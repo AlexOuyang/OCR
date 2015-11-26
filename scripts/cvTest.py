@@ -3,7 +3,7 @@ import numpy as np
 from pylab import imread, imshow, imsave, figure, show, subplot, plot, scatter, title
 import ocr
 
-# img = cv2.imread('../pics/8.png')
+# img = cv2.imread('../pics/12.png')
 # saved_image_name = '../pics/cropped/cvPic1.png'
 # blur = cv2.GaussianBlur(img,(5, 5), 0)   
 # edge = cv2.Canny(blur,50,50)
@@ -36,7 +36,7 @@ import ocr
 # figure(1)
 # subplot(221)
 # title('Original Image')
-# imshow(img)
+# imshow(blur)
 # subplot(222)
 # title('Canny Edge Detection')
 # imshow(edge)
@@ -96,7 +96,7 @@ import ocr
 
 figure(1)
 title("handWriting")
-cropped_img = ocr.save_digit_to_binary_img('../pics/12.png', 5)
+cropped_img = ocr.save_digit_to_binary_img('../pics/8.png', 5)
 cv2.imwrite('../pics/cropped/cvPic3.png', cropped_img)
 subplot(111)
 imshow(cropped_img)
