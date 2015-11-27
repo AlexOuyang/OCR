@@ -12,6 +12,30 @@ from scipy.cluster.vq import kmeans, vq
 # from skimage.segmentation import clear_border
 
 
+
+# crop the digit and save as binary files, then return the boxed digits
+def save_digit_as_bin_original(imgName, boundingRectMinSize):
+    img = cv2.imread(imgName)
+    imgToShow = copy.copy(img)
+    thresh = binary_filter(img)
+    contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
+    idx = 0 
+    for cnt in contours:
+        if cnt.shape[0] >= boundingRectMinSize:
+            idx += 1
+            x,y,w,h = cv2.boundingRect(cnt)
+            cv2.rectangle(imgToShow,(x,y),(x+w,y+h),(0,255,0),1)
+
+            # crop out the image, threshold it and save as binary image
+            crop_img = img[y: y + h, x: x + w]   # img[y: y + h, x: x + w]
+            grayed_im  = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+            # blur = cv2.GaussianBlur(grayed_im,(5, 5), 0)  
+            ret,thresh = cv2.threshold(grayed_im, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            cv2.imwrite('../pics/cropped/' + str(idx) + '.png', thresh)
+    return imgToShow
+
+
 # returns the image with digits boxed
 def crop_digit(imgName, boundingRectMinSize):
     img = cv2.imread(imgName)
@@ -26,8 +50,8 @@ def crop_digit(imgName, boundingRectMinSize):
     return img
 
 
-# crop the digit and save as binary files, then return the boxed digits
-def save_digit_to_binary_img(imgName, boundingRectMinSize):
+# crop the digit and save as binary files, then return the boxed digits in 28 by 28
+def save_digit_to_binary_img_as_mnist(imgName, boundingRectMinSize):
     img = cv2.imread(imgName)
     imgToShow = copy.copy(img)
     thresh = binary_filter(img)
@@ -55,7 +79,6 @@ def save_digit_to_binary_img(imgName, boundingRectMinSize):
             print padded_img.shape
             cv2.imwrite('../pics/cropped/' + str(idx) + '.png', padded_img)
     return imgToShow
-
 
 def binary_filter(img):
     """ takes in a colored img and returns the binary threshold """
@@ -110,7 +133,6 @@ def make_binary(img):
 
 
 def flip_binary(img):
-    print img
     for (x,y), pixel in np.ndenumerate(img):
         if img[x,y] == 0:
             img[x,y] = 255

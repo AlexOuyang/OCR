@@ -69,7 +69,7 @@ import ocr
 
 # figure(2)
 # title("Pretty Print")
-# cropped_img = ocr.crop_digit('../pics/print.png', 10)
+# cropped_img = ocr.save_digit_to_binary_img_as_mnist('../pics/print.png', 10)
 # cv2.imwrite('../pics/cropped/cvPic1.png', cropped_img)
 # subplot(111)
 # imshow(cropped_img)
@@ -77,7 +77,7 @@ import ocr
 
 # figure(3)
 # title("handWriting")
-# cropped_img = ocr.crop_digit('../pics/handWriting.jpg', 10)
+# cropped_img = ocr.save_digit_to_binary_img_as_mnist('../pics/handWriting.jpg', 10)
 # cv2.imwrite('../pics/cropped/cvPic2.png', cropped_img)
 # subplot(111)
 # imshow(cropped_img)
@@ -86,7 +86,7 @@ import ocr
 
 # figure(4)
 # title("handWriting")
-# cropped_img = ocr.crop_digit('../pics/lotsOfDigits.png', 5)
+# cropped_img = ocr.save_digit_to_binary_img_as_mnist('../pics/lotsOfDigits.png', 5)
 # cv2.imwrite('../pics/cropped/cvPic3.png', cropped_img)
 # subplot(111)
 # imshow(cropped_img)
@@ -96,7 +96,7 @@ import ocr
 
 figure(1)
 title("handWriting")
-cropped_img = ocr.save_digit_to_binary_img('../pics/12.png', 5)
+cropped_img = ocr.save_digit_to_binary_img_as_mnist('../pics/12.png', 5)
 cv2.imwrite('../pics/cropped/cvPic3.png', cropped_img)
 subplot(111)
 imshow(cropped_img)
