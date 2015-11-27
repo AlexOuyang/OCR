@@ -45,9 +45,15 @@ def save_digit_to_binary_img(imgName, boundingRectMinSize):
             # blur = cv2.GaussianBlur(grayed_im,(5, 5), 0)  
             ret,thresh = cv2.threshold(grayed_im, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
             # resize image to fit mnist dataset
-            resized_img = resize(thresh, 28.)
-            print resized_img.shape
-            cv2.imwrite('../pics/cropped/' + str(idx) + '.png', resized_img)
+            resized_img = resize(thresh, 28)
+            # make the digit pure binary
+            bin_img = make_binary(resized_img)
+            # make the digit black
+            black_digit = make_digit_black(bin_img)
+            # add padding to make it 28 by 28
+            padded_img = padding(black_digit, 28)
+            print padded_img.shape
+            cv2.imwrite('../pics/cropped/' + str(idx) + '.png', padded_img)
     return imgToShow
 
 
@@ -63,13 +69,73 @@ def binary_filter(img):
 
 def resize(img, size):
     """ resize the image to fit in the size x size matrix """
-    r = float(size) / img.shape[1]
-    dim = (int(size), int(img.shape[0] * r))
+    if img.shape[1] > img.shape[0]:
+        r = float(size) / img.shape[1]
+        dim = (int(size), int(img.shape[0] * r))
+    else:
+        r = float(size) / img.shape[0]
+        dim = (int(img.shape[1] * r), int(size))
+
     resized_img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
     return resized_img
 
-# obsolete code
 
+def make_digit_black(img):
+    """ flip the binary image if necessary to make it match mnist criteria 
+        we detect the color of the digits by suming up the color of the peripherals
+        of the picture, if the peripherals is white then the background is white, then
+        we know the digit is black....
+    """
+    peripherals = np.empty([0,])
+    h = img.shape[0]
+    w = img.shape[1]
+    peripherals = np.r_[peripherals, img[0,:]]  #get the sides
+    peripherals = np.r_[peripherals, img[h-1,:]] 
+    peripherals = np.r_[peripherals, img[:,0]] 
+    peripherals = np.r_[peripherals, img[:,w-1]] 
+    # if the mean color is black, that means the background is black, needs to flip
+    if np.mean(peripherals) < 127.5:
+        return flip_binary(img)
+    else: 
+        return img
+
+def make_binary(img):
+    """ make the image pure black and white """
+    for (x,y), pixel in np.ndenumerate(img):
+        if img[x,y] > 127.5:
+            img[x,y] = 255
+        else:
+            img[x,y] = 0
+    return img
+
+
+def flip_binary(img):
+    print img
+    for (x,y), pixel in np.ndenumerate(img):
+        if img[x,y] == 0:
+            img[x,y] = 255
+        elif img[x,y] == 255:
+            img[x,y] = 0
+        else:
+            print "flip_binary(): this image is not binary"
+
+    return img
+
+def padding(img, size):
+    """ add padding to the image to make it square """
+    padded = np.empty([size,size])
+    padded.fill(255)
+    h = img.shape[0]
+    w = img.shape[1]
+    x = int(size/2 - w/2)
+    y = int(size/2 - h/2)
+    padded[y: y + h, x: x + w] = img
+
+    return padded
+
+
+
+# obsolete code
 
 
 # K means on color filtering, it doesn't clear out the background very well
