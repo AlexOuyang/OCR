@@ -228,7 +228,7 @@ def iterate_minibatches(inputs, targets, batchsize, shuffle=False):
 # more functions to better separate the code, but it wouldn't make it any
 # easier to read.
 
-def main(model='mlp', num_epochs=500):
+def main(model='mlp', num_epochs=10):
     # Load the dataset
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test = load_dataset()
@@ -268,6 +268,7 @@ def main(model='mlp', num_epochs=500):
     # here is that we do a deterministic forward pass through the network,
     # disabling dropout layers.
     test_prediction = lasagne.layers.get_output(network, deterministic=True)
+
     test_loss = lasagne.objectives.categorical_crossentropy(test_prediction,
                                                             target_var)
     test_loss = test_loss.mean()
@@ -305,6 +306,8 @@ def main(model='mlp', num_epochs=500):
             val_err += err
             val_acc += acc
             val_batches += 1
+            print(T.argmax(test_prediction, axis=1))
+
 
         # Then we print the results for this epoch:
         print("Epoch {} of {} took {:.3f}s".format(

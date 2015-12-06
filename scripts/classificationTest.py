@@ -7,6 +7,9 @@ import theano
 import theano.tensor as T
 
 import lasagne
+import matplotlib
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
 
 
 def load_dataset():
@@ -126,15 +129,8 @@ def build_mlp(input_var=None):
     # the output layer to give access to a network in Lasagne:
     return l_out
 
+print("Loading data...")
     
-
-
-
-
-
-
-
-
 # Load the dataset
 X_train, y_train, X_val, y_val, X_test, y_test = load_dataset()
 
@@ -145,67 +141,31 @@ target_var = T.ivector('targets')
 # Create neural network model (depending on first command line parameter)
 network = build_mlp(input_var)
 
-
-# Create a loss expression for training, i.e., a scalar objective we want
-# to minimize (for our multi-class problem, it is the cross-entropy loss):
-prediction = lasagne.layers.get_output(network)
-loss = lasagne.objectives.categorical_crossentropy(prediction, target_var)
-loss = loss.mean()
-# We could add some weight decay as well here, see lasagne.regularization.
-
-# Create update expressions for training, i.e., how to modify the
-# parameters at each training step. Here, we'll use Stochastic Gradient
-# Descent (SGD) with Nesterov momentum, but Lasagne offers plenty more.
-params = lasagne.layers.get_all_params(network, trainable=True)
-updates = lasagne.updates.nesterov_momentum(
-        loss, params, learning_rate=0.01, momentum=0.9)
-
-# Create a loss expression for validation/testing. The crucial difference
-# here is that we do a deterministic forward pass through the network,
-# disabling dropout layers.
-test_prediction = lasagne.layers.get_output(network, deterministic=True)
-test_loss = lasagne.objectives.categorical_crossentropy(test_prediction,
-                                                        target_var)
-test_loss = test_loss.mean()
-# As a bonus, also create an expression for the classification accuracy:
-test_acc = T.mean(T.eq(T.argmax(test_prediction, axis=1), target_var),
-                  dtype=theano.config.floatX)
-
-# Compile a function performing a training step on a mini-batch (by giving
-# the updates dictionary) and returning the corresponding training loss:
-train_fn = theano.function([input_var, target_var], loss, updates=updates)
-
-# Compile a second function computing the validation loss and accuracy:
-val_fn = theano.function([input_var, target_var], [test_loss, test_acc])
-
-
-
-
-
 # load trained weights
-with np.load('model.npz') as f:
+with np.load('../trainedResult/model.npz') as f:
     param_values = [f['arr_%d' % i] for i in range(len(f.files))]
 
 lasagne.layers.set_all_param_values(network, param_values)
 
+prediction = lasagne.layers.get_output(network, deterministic=True)
 
+f_output = theano.function([input_var], prediction)
 
+plt.subplot(211)
 
+plt.imshow(X_test[0][0], cmap=cm.binary)
 
+#test image
 
-test_err = 0
-test_acc = 0
-test_batches = 0
-for batch in iterate_minibatches(X_test, y_test, 500, shuffle=False):
-    inputs, targets = batch
-    err, acc = val_fn(inputs, targets)
-    test_err += err
-    test_acc += acc
-    test_batches += 1
-print "  test accuracy:\t\t{:.2f} %".format(
-    test_acc / test_batches * 100
+instance = X_test[0][None, :, :]
 
+pred = f_output(instance)
 
+N = pred.shape[1]
 
+plt.subplot(212)
 
+#result with probability
+plt.bar(range(N), pred.ravel())
 
+plt.show()
