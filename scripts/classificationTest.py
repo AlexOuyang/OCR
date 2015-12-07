@@ -10,7 +10,11 @@ import lasagne
 import matplotlib
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+import matplotlib.image as img
 
+def load_image(filename):
+	image = img.imread(filename)
+	return image
 
 def load_dataset():
     # We first define a download function, supporting both Python 2 and 3.
@@ -153,12 +157,17 @@ f_output = theano.function([input_var], prediction)
 
 plt.subplot(211)
 
-plt.imshow(X_test[0][0], cmap=cm.binary)
+test = load_image('../pics/cropped/4.png')
+
+plt.imshow(test, cmap=cm.binary)
+
 
 #test image
 
-instance = X_test[0][None, :, :]
-
+instance = test.reshape(-1, 1, 28, 28)
+instane = instance[0][None,:,:]
+#instance = X_test[1][None, :,:]
+#plt.imshow(X_test[1][0], cmap=cm.binary)
 pred = f_output(instance)
 
 N = pred.shape[1]
@@ -169,3 +178,5 @@ plt.subplot(212)
 plt.bar(range(N), pred.ravel())
 
 plt.show()
+
+

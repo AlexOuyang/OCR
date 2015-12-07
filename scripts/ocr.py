@@ -76,8 +76,9 @@ def save_digit_to_binary_img_as_mnist(imgName, boundingRectMinSize):
             black_digit = make_digit_black(bin_img)
             # add padding to make it 28 by 28
             padded_img = padding(black_digit, 28)
+            white_digit = flip_binary(padded_img)
             print padded_img.shape
-            cv2.imwrite('../pics/cropped/' + str(idx) + '.png', padded_img)
+            cv2.imwrite('../pics/cropped/' + str(idx) + '.png', white_digit)
     return imgToShow
 
 def binary_filter(img):
