@@ -89,8 +89,8 @@ def predict(img, classifier):
     instance = instance[0][None,:,:]
     results = classifier(instance).ravel()
     digit = np.argmax(results)
-    probability = float(results[digit])
-    return digit, probability
+    probability = results[digit]
+    return digit, float(probability)
 
 
 

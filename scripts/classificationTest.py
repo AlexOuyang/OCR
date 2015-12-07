@@ -16,7 +16,7 @@ import multilayerPerceptron as mlp
 
 f_output = mlp.build_classifier('../trainedResult/model.npz')
 
-input_img = imread('../pics/cropped/0.png')
+input_img = imread('../pics/cropped/20.png')
 
 print mlp.predict(input_img, f_output)
 
