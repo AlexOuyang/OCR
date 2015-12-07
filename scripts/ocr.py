@@ -2,20 +2,68 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 import copy
+import os
+import shutil
 
 from pylab import imread, imshow, figure, show, subplot, plot, scatter
 from scipy.cluster.vq import kmeans, vq
 
-# from skimage import data, img_as_uint, img_as_float
-# from skimage.external.tifffile import imsave
-# from skimage.filters import threshold_otsu, threshold_adaptive, threshold_yen
-# from skimage.segmentation import clear_border
 
+def delete_files(directory):
+    """ Deletes all files and folders contained in the directory """
+    for the_file in os.listdir(directory):
+        file_path = os.path.join(directory, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+            #elif os.path.isdir(file_path): shutil.rmtree(file_path)
+        except Exception, e:
+            print e
+
+
+# crop the digit and save as binary files, then return the boxed digits in 28 by 28
+def save_digit_to_binary_img_as_mnist(imgName, saveToFile = True, imgSize = 100, boundingRectMinSize = 5):
+    """ takes in an image name, crops the digit and save as 28 by 28 images, 
+        then returns the image with digits bounding boxes drawn on it and 
+        a list contains all the corpped digits
+    """
+    croppedDigits = [] # empty list holds all the cropped images
+    img = cv2.imread(imgName)
+    img = resize(img, imgSize)    # resize img to get better crops
+    imgToShow = copy.copy(img)
+    thresh = binary_filter(img)
+    contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
+    idx = 0 
+    for cnt in contours:
+        if cnt.shape[0] >= boundingRectMinSize:
+            x,y,w,h = cv2.boundingRect(cnt)
+            cv2.rectangle(imgToShow,(x,y),(x+w,y+h),(0,255,0),1)
+
+            # crop out the image, threshold it and save as binary image
+            crop_img = img[y: y + h, x: x + w]   # img[y: y + h, x: x + w]
+            grayed_im  = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+            # blur = cv2.GaussianBlur(grayed_im,(5, 5), 0)  
+            ret,thresh = cv2.threshold(grayed_im, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            # resize image to fit mnist dataset
+            resized_img = resize(thresh, 28)
+            # make the digit pure binary
+            bin_img = make_binary(resized_img)
+            # make the digit black
+            black_digit = make_digit_black(bin_img)
+            # add padding to make it 28 by 28
+            padded_img = padding(black_digit, 28)
+            white_digit = flip_binary(padded_img)
+            # add cropped digits to list
+            croppedDigits.append(white_digit) 
+            if saveToFile: cv2.imwrite('../pics/cropped/' + str(idx) + '.png', white_digit)
+            idx += 1
+    return imgToShow, croppedDigits
 
 
 # crop the digit and save as binary files, then return the boxed digits
-def save_digit_as_bin_original(imgName, boundingRectMinSize):
+def save_digit_as_binary_original(imgName, imgSize, boundingRectMinSize):
     img = cv2.imread(imgName)
+    img = resize(img, imgSize)    # resize img to get better crops
     imgToShow = copy.copy(img)
     thresh = binary_filter(img)
     contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
@@ -49,37 +97,6 @@ def crop_digit(imgName, boundingRectMinSize):
             cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),1)      # draw box on original image
     return img
 
-
-# crop the digit and save as binary files, then return the boxed digits in 28 by 28
-def save_digit_to_binary_img_as_mnist(imgName, boundingRectMinSize):
-    img = cv2.imread(imgName)
-    imgToShow = copy.copy(img)
-    thresh = binary_filter(img)
-    contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
-    idx = 0 
-    for cnt in contours:
-        if cnt.shape[0] >= boundingRectMinSize:
-            idx += 1
-            x,y,w,h = cv2.boundingRect(cnt)
-            cv2.rectangle(imgToShow,(x,y),(x+w,y+h),(0,255,0),1)
-
-            # crop out the image, threshold it and save as binary image
-            crop_img = img[y: y + h, x: x + w]   # img[y: y + h, x: x + w]
-            grayed_im  = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
-            # blur = cv2.GaussianBlur(grayed_im,(5, 5), 0)  
-            ret,thresh = cv2.threshold(grayed_im, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-            # resize image to fit mnist dataset
-            resized_img = resize(thresh, 28)
-            # make the digit pure binary
-            bin_img = make_binary(resized_img)
-            # make the digit black
-            black_digit = make_digit_black(bin_img)
-            # add padding to make it 28 by 28
-            padded_img = padding(black_digit, 28)
-            white_digit = flip_binary(padded_img)
-            print padded_img.shape
-            cv2.imwrite('../pics/cropped/' + str(idx) + '.png', white_digit)
-    return imgToShow
 
 def binary_filter(img):
     """ takes in a colored img and returns the binary threshold """
@@ -117,7 +134,8 @@ def make_digit_black(img):
     peripherals = np.r_[peripherals, img[h-1,:]] 
     peripherals = np.r_[peripherals, img[:,0]] 
     peripherals = np.r_[peripherals, img[:,w-1]] 
-    # if the mean color is black, that means the background is black, needs to flip
+    # if the mean color of the phericals of the image is white, that means 
+    # the background is white, needs to flip the background to black, digit to white
     if np.mean(peripherals) < 127.5:
         return flip_binary(img)
     else: 

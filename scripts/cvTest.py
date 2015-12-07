@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from pylab import imread, imshow, imsave, figure, show, subplot, plot, scatter, title
 import ocr
+import multilayerPerceptron as mlp
 
 # img = cv2.imread('../pics/12.png')
 # saved_image_name = '../pics/cropped/cvPic1.png'
