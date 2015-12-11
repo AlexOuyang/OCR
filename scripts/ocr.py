@@ -22,8 +22,8 @@ def delete_files(directory):
 
 
 # crop the digit and save as binary files, then return the boxed digits in 28 by 28
-def save_digit_to_binary_img_as_mnist(img, saveToFile = True, imgSize = None, boundingRectMinSize = 5):
-    """ takes in an image/ image name, crops the digit and save as 28 by 28 images, 
+def save_digit_to_binary_img_as_mnist(img, dim = 28, saveToFile = True, imgSize = None, boundingRectMinSize = 5):
+    """ takes in an image/ image name, crops the digit and save as dim by dim images, 
         then returns the image with digits bounding boxes drawn on it and 
         a list contains all the corpped digits
     """
@@ -37,7 +37,7 @@ def save_digit_to_binary_img_as_mnist(img, saveToFile = True, imgSize = None, bo
     # thresh = binary_filter(img)
 
     # blur = cv2.GaussianBlur(img,(5, 5), 0)   
-    edge = cv2.Canny(img,50,50)
+    edge = cv2.Canny(img,100,100)
     # ret,thresh = cv2.threshold(edge,127,255,cv2.THRESH_OTSU)
     ret,thresh = cv2.threshold(edge,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     threshToShow = copy.copy(thresh)
@@ -57,13 +57,13 @@ def save_digit_to_binary_img_as_mnist(img, saveToFile = True, imgSize = None, bo
             # blur = cv2.GaussianBlur(grayed_im,(5, 5), 0)  
             ret,thresh = cv2.threshold(grayed_im, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
             # resize image to fit mnist dataset
-            resized_img = resize(thresh, 28)
+            resized_img = resize(thresh, dim)
             # make the digit pure binary
             bin_img = make_binary(resized_img)
             # make the digit black
             black_digit = make_digit_black(bin_img)
-            # add padding to make it 28 by 28
-            padded_img = padding(black_digit, 28)
+            # add padding to make it dim by dim
+            padded_img = padding(black_digit, dim)
             white_digit = flip_binary(padded_img)
             # add cropped digits to list
             croppedDigits.append(white_digit) 

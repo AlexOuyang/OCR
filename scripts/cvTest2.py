@@ -24,7 +24,7 @@ ocr.delete_files("../pics/cropped/")
 
 print ("Preprocessing Image, Cropping Digits Into 28 X 28 Image Matrices\n")
 #  save_digit_to_binary_img_as_mnist(imgName, saveToFile = True, imgSize     = 100, boundingRectMinSize = 5)
-cropped_img_to_show, cropped_thresh_to_Show, cropped_digits = ocr.save_digit_to_binary_img_as_mnist("../pics/12.png",saveToFile = True)
+cropped_img_to_show, cropped_thresh_to_Show, cropped_digits = ocr.save_digit_to_binary_img_as_mnist("../pics/print.png", dim = 28, imgSize = 100, saveToFile = True)
 
 print ("Image Preprocessing Done, %d Potential Digits Were Cropped Out\n" % len(cropped_digits))
 

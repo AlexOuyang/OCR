@@ -85,7 +85,11 @@ def build_classifier(trainedResult):
 def predict(img, classifier):
     """ Takes in a binary 28 by 28 image matrix  
     returns the digit with highest probability """
-    instance = img.reshape(-1, 1, 28, 28) # the classifier takes in a 4d array
+    if img.shape[0] != img.shape[1]: 
+        print "input image for predict() in multilayerPerceptron.py is not a square image"
+        return img
+    size = img.shape[0]
+    instance = img.reshape(-1, 1, size, size) # the classifier takes in a 4d array
     instance = instance[0][None,:,:]
     results = classifier(instance).ravel()
     digit = np.argmax(results)
