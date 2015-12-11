@@ -12,6 +12,13 @@ Summary:
 Usage:
         Press 'c' to take a screen shot for analysis
         Press 'q' or 'ESC' to quit
+        Press '1' to increase resized frame for analysis by 50px
+
+Run:
+        python main.py SCALE_FACTOR
+
+SCALE_FACTOR controls the frame size: 
+frame size = frame size / SCALE_FACTOR
 
 
 """
@@ -25,9 +32,13 @@ import multilayerPerceptron as mlp
 print(__doc__)
 
 
-pause = False
+ANALYZE = False    # Used to analyse video frame for digits
+SCALE_FACTOR = 2 if len(sys.argv) == 1 else int(sys.argv[1])
+
+frame_new_dim = 100
 
 
+# Build neural network on start
 print ("Building Multilayer Perceptron Network From Trained Model\n")
 mlp_classifier = mlp.build_classifier('../trainedResult/model.npz')
 
@@ -38,7 +49,7 @@ def analyze_digit (img):
     ocr.delete_files("../pics/cropped/")
 
     print ("Preprocessing Image, Cropping Digits Into 28 X 28 Image Matrices\n")
-    cropped_img_to_show, cropped_thresh_to_Show, cropped_digits = ocr.save_digit_to_binary_img_as_mnist(img,saveToFile = True, imgSize = 100)
+    cropped_img_to_show, cropped_thresh_to_Show, cropped_digits = ocr.save_digit_to_binary_img_as_mnist(img,saveToFile = True, imgSize = frame_new_dim)
 
     print ("Image Preprocessing Done, %d Potential Digits Were Cropped Out\n" % len(cropped_digits))
 
@@ -60,16 +71,14 @@ def analyze_digit (img):
     # subplot(111)
     # imshow(cropped_img_to_show)
     # show()
+    new_dim = (SCALE_FACTOR * img.shape[1]/2, SCALE_FACTOR * img.shape[0]/2)
+    cropped_img_to_show = cv2.resize(cropped_img_to_show, new_dim)
+    cropped_thresh_to_Show = cv2.resize(cropped_thresh_to_Show, new_dim)
     cv2.imshow('handWriting Capture Cropped Image', cropped_img_to_show)
     cv2.imshow('handWriting Capture Cropped Thresh', cropped_thresh_to_Show)
 
-    # pause = True
 
 
-
-
-
-SCALE_FACTOR = 4 if len(sys.argv) == 1 else int(sys.argv[1])
 video_capture = cv2.VideoCapture(0)
 
 while True:
@@ -88,17 +97,19 @@ while True:
 
     # Digit Detection
     if key == ord('c'):
-        print "Pressed"
-        pause = not pause
+        print "Sent frame for analysis"
+        ANALYZE = not ANALYZE
         analyze_digit(frame)
-        pause = not pause
+        ANALYZE = not ANALYZE
 
+    if key == ord('1'):
+        frame_new_dim += 20
+        print "Resized the frame for analysis to be ", frame_new_dim, " px"
 
     # if cv2.waitKey(1) & 0xFF == ord('q'):
     #     break
 
-    if not pause:
-        cv2.imshow('handWriting Capture', frame)
+    cv2.imshow('handWriting Capture', frame)
 
     cv2.putText(frame, "Press ESC or 'q' to quit. \nPress 'c' to analyze picture", (5, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255))
 
