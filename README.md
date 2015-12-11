@@ -12,7 +12,7 @@ To Run:
 
         python main.py
 
-                    or
+            or
 
         python main.py SCALE_FACTOR         
 
@@ -23,7 +23,7 @@ To specify a SCALE_FACTOR. SCALE_FACTOR controls the frame size:  frame size = f
 Usage During Run Time:
 
         Press 'c' to take a screen shot for analysis
-        The corpped images are saved under OCR/pics/cropped
+        The corpped images are saved under directory: OCR/pics/cropped/
 
         Press 'q' or 'ESC' to quit
 
