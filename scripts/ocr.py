@@ -22,22 +22,34 @@ def delete_files(directory):
 
 
 # crop the digit and save as binary files, then return the boxed digits in 28 by 28
-def save_digit_to_binary_img_as_mnist(imgName, saveToFile = True, imgSize = 100, boundingRectMinSize = 5):
-    """ takes in an image name, crops the digit and save as 28 by 28 images, 
+def save_digit_to_binary_img_as_mnist(img, saveToFile = True, imgSize = None, boundingRectMinSize = 5):
+    """ takes in an image/ image name, crops the digit and save as 28 by 28 images, 
         then returns the image with digits bounding boxes drawn on it and 
         a list contains all the corpped digits
     """
     croppedDigits = [] # empty list holds all the cropped images
-    img = cv2.imread(imgName)
-    img = resize(img, imgSize)    # resize img to get better crops
+
+    # if img is a image name, then read it
+    if isinstance(img, str): 
+        img = cv2.imread(img)
+    if imgSize: img = resize(img, imgSize)    # resize img to get better crops
     imgToShow = copy.copy(img)
-    thresh = binary_filter(img)
+    # thresh = binary_filter(img)
+
+    # blur = cv2.GaussianBlur(img,(5, 5), 0)   
+    edge = cv2.Canny(img,50,50)
+    # ret,thresh = cv2.threshold(edge,127,255,cv2.THRESH_OTSU)
+    ret,thresh = cv2.threshold(edge,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    threshToShow = copy.copy(thresh)
+
+    # gray=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
     contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
     idx = 0 
     for cnt in contours:
         if cnt.shape[0] >= boundingRectMinSize:
             x,y,w,h = cv2.boundingRect(cnt)
             cv2.rectangle(imgToShow,(x,y),(x+w,y+h),(0,255,0),1)
+            cv2.rectangle(threshToShow,(x,y),(x+w,y+h),(0,255,0),1)
 
             # crop out the image, threshold it and save as binary image
             crop_img = img[y: y + h, x: x + w]   # img[y: y + h, x: x + w]
@@ -57,12 +69,13 @@ def save_digit_to_binary_img_as_mnist(imgName, saveToFile = True, imgSize = 100,
             croppedDigits.append(white_digit) 
             if saveToFile: cv2.imwrite('../pics/cropped/' + str(idx) + '.png', white_digit)
             idx += 1
-    return imgToShow, croppedDigits
+    return imgToShow, threshToShow, croppedDigits
 
 
 # crop the digit and save as binary files, then return the boxed digits
-def save_digit_as_binary_original(imgName, imgSize, boundingRectMinSize):
-    img = cv2.imread(imgName)
+def save_digit_as_binary_original(img, imgSize, boundingRectMinSize):
+    if isinstance(img, str): 
+        img = cv2.imread(img)    
     img = resize(img, imgSize)    # resize img to get better crops
     imgToShow = copy.copy(img)
     thresh = binary_filter(img)

@@ -97,8 +97,8 @@ import multilayerPerceptron as mlp
 
 figure(1)
 title("handWriting")
-cropped_img = ocr.save_digit_to_binary_img_as_mnist('../pics/12.png', 5)
-cv2.imwrite('../pics/cropped/cvPic3.png', cropped_img)
+cropped_img = ocr.save_digit_to_binary_img_as_mnist("../pics/12.png", 5)
+cv2.imwrite("../pics/cropped/cvPic3.png", cropped_img)
 subplot(111)
 imshow(cropped_img)
 show()
